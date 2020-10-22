@@ -5,12 +5,10 @@ Project 2
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.awt.Point;
-import java.util.ArrayList;
-
-
 
 
 public class Project2 {
@@ -51,45 +49,57 @@ public class Project2 {
             }
         }
 
-        /*for (int i = 0; i < points.size(); i++) {
-            System.out.println(points.get(i));
-        }*/
-        //System.out.println(points);
+        scanner.close();
 
-        //midPoint = findMid(points);
         stepThrough(points, smallestX, smallestY, largestX, largestY);
-        //System.out.println(midPoint);
     }
 
     static void stepThrough(ArrayList<Point> points, int sx, int sy, int lx, int ly) {
         Point bestLOne = new Point (-1, -1);
-        Point bestLTwo = new Point (-1, -1);;
-        int bestDist = -1;
+        Point bestLTwo = new Point (-1, -1);
+        int bestDistOne = -1;
+        double bestDistTwo = -1;
+        //DecimalFormat format = new DecimalFormat("0.##############################");
+        //System.out.println(format.format(price));
 
         for (int x = sx; x <= lx; x++) {
             for (int y = sy; y <= ly; y++) {
                 Point passingPoint = new Point (x, y);
                 int distOne = calcLOne(points, passingPoint);
                 
-                if (bestDist == -1) {
-                    bestDist = distOne;
-                    bestLOne.setLocation(passingPoint);
-                    //System.out.println("\n\npassingPT: " + passingPoint + "\n\n");
-                }
-
-                if (distOne < bestDist) {
-                    bestDist = distOne;
-                    //System.out.println("\n\npassingPT: " + passingPoint + "\n\n");
+                if (bestDistOne == -1) {
+                    bestDistOne = distOne;
                     bestLOne.setLocation(passingPoint);
                 }
 
+                if (distOne < bestDistOne) {
+                    bestDistOne = distOne;
+                    bestLOne.setLocation(passingPoint);
+                }
+
+                double distTwo = calcLTwo(points, passingPoint);
+
+                if (bestDistTwo == -1) {
+                    bestDistTwo = distTwo;
+                    bestLTwo.setLocation(passingPoint);
+                }
+
+                if (distTwo < bestDistTwo) {
+                    bestDistTwo = distTwo;
+                    bestLTwo.setLocation(passingPoint);
+                }
 
             }
 
         }
 
-        System.out.println("The best loc: " + bestLOne + " dist: " + bestDist);
+        System.out.println("(" + bestLOne.x + "," + bestLOne.y + ") " + bestDistOne);
+        System.out.println("(" + bestLTwo.x + "," + bestLTwo.y + ") " + removeTrailingZeros(bestDistTwo));
 
+    }
+
+    private static String removeTrailingZeros(double passedIn) {
+        return String.valueOf(passedIn).replaceAll("[0]*$", "").replaceAll("\\.$", "");
     }
 
     static int calcLOne (ArrayList<Point> points, Point passedIn) {
@@ -116,9 +126,24 @@ public class Project2 {
         return addedDist;
     }
 
-    static int calcLTwo (ArrayList<Point> points, Point passedIn) {
+    static double calcLTwo (ArrayList<Point> points, Point passedIn) {
+        double addedDist = 0;
 
-        return 1;
+        for (int i = 0; i < points.size(); i++) {
+            double tempDist = 0;
+            int tempX = 0;
+            int tempY = 0;
+
+            tempX = points.get(i).x - passedIn.x;
+            tempY = points.get(i).y - passedIn.y;
+
+            tempX = tempX * tempX;
+            tempY = tempY * tempY;
+
+            tempDist = Math.sqrt(tempX + tempY);
+            addedDist = addedDist + tempDist;            
+        }
+        return addedDist;
     }
 
     static Point findMid(ArrayList<Point> points) {
