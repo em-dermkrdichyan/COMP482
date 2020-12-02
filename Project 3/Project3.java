@@ -31,7 +31,6 @@ public class Project3 {
 
         scanner.close();
 
-        //System.out.println(leftList + "\n\n" + rightList);
         Collections.sort(leftList); //remove these 
         Collections.sort(rightList); //remove
 
