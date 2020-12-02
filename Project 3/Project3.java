@@ -29,76 +29,115 @@ public class Project3 {
             }
         }
 
+        scanner.close();
+
         //System.out.println(leftList + "\n\n" + rightList);
+        Collections.sort(leftList); //remove these 
+        Collections.sort(rightList); //remove
 
         //if even ignore 1 from the bigger side of the one youre throwing away
         findMed(leftList, rightList);
+        countInversions (leftList, rightList);
 
     }
 
     static void findMed (ArrayList<Integer> firstList, ArrayList<Integer> secondList) {
-        int median = -1;
         int size = firstList.size();
         int size2 = secondList.size();
+
+        ArrayList<Integer> first2 = firstList;
+        ArrayList<Integer> second2 = secondList;
         boolean even = false;
 
-        System.out.println("first " + size + " second " + size2);
 
         int index = -1;
-        while (size > 4) {
+        while (size > 2) {
+            System.out.println("first size " + size + " second size " + size2);
 
-            if (size > 1) {
-                if (size % 2 ==  1) {
-                    index = size / 2;
-                }
-                else if (size % 2 == 0) {
-                    index = size / 2 - 1;
-                    even = true;
-                }
-                int firstInt = firstList.get(index);
-                int secondInt = secondList.get(index);
+            if (size % 2 ==  1) {
+                index = size / 2;
+                even = false;
+            }
+            else if (size % 2 == 0) {
+                index = size / 2 - 1;
+                even = true;
+            }
+            int firstInt = first2.get(index);
+            int secondInt = second2.get(index);
+
+            System.out.println("first int " + firstInt + " second int " + secondInt);
         
-                if (firstInt > secondInt) {
-                    if (even == false) {
-                        ArrayList<Integer> first2 = new ArrayList<Integer>(firstList.subList(0, index));
-                        ArrayList<Integer> second2 = new ArrayList<Integer>(secondList.subList(index, size));
+            if (firstInt > secondInt) {
+                if (even == false) {
+                    first2 = new ArrayList<Integer>(first2.subList(0, index + 1));
+                    second2 = new ArrayList<Integer>(second2.subList(index, size));
+                    size = first2.size();
 
-                        System.out.println("first2 " + first2 + "\nsecond2 " + second2); 
+                    //System.out.println("firstaaa2 " + first2 + "\nsecond2 " + second2); //good
         
-                        findMed(first2, second2);
-                    }
-                    else  { //if index is even so its an odd #
-                        ArrayList<Integer> first2 = new ArrayList<Integer>(firstList.subList(0, index + 1));
-                        ArrayList<Integer> second2 = new ArrayList<Integer>(secondList.subList(index, size));
-        
-                        System.out.println("first2 " + first2 + "\nsecond2 " + second2); 
-
-                        findMed(first2, second2);
-                    }
                 }
-                else if (firstInt < secondInt) {
-                    if (even == false) {
-                        ArrayList<Integer> first2 = new ArrayList<Integer>(secondList.subList(0, index));
-                        ArrayList<Integer> second2 = new ArrayList<Integer>(firstList.subList(index, size));
-                        System.out.println("first2 " + first2 + "\nsecond2 " + second2); 
+                else  { //if index is even so its an odd #
+                    first2 = new ArrayList<Integer>(first2.subList(0, index + 2));
+                    second2 = new ArrayList<Integer>(second2.subList(index, size));
+                    size = first2.size();
 
-                        findMed(first2, second2);
-                    }
-                    else  { //if index is even so its an odd #
-                        ArrayList<Integer> first2 = new ArrayList<Integer>(secondList.subList(0, index + 1));
-                        ArrayList<Integer> second2 = new ArrayList<Integer>(firstList.subList(index, size));
-                        System.out.println("first2 " + first2 + "\nsecond2 " + second2); 
+                    System.out.println("firstbbb2 " + first2 + "\nsecond2 " + second2); //check these
 
-                        findMed(first2, second2);
-                    }
+
                 }
             }
-            else {
-                System.out.println("firstL " + firstList + "\nsecondList " + secondList);
-                double average = (firstList.get(0) + secondList.get(0)) / 2;
-                System.out.println("The Average: " + average);
+            else if (firstInt < secondInt) {
+                if (even == false) {
+                    first2 = new ArrayList<Integer>(first2.subList(index, size));
+                    second2 = new ArrayList<Integer>(second2.subList(0, index + 1));
+                    size = first2.size();
+
+                    //System.out.println("firstccc2 " + first2 + "\nsecond2 " + second2); //good
+
+                }
+                else  { //if index is even so its an odd #
+                    first2 = new ArrayList<Integer>(first2.subList(index, size));
+                    second2 = new ArrayList<Integer>(second2.subList(0, index + 2));
+                    size = first2.size();
+
+                    System.out.println("firstddd2 " + first2 + "\nsecond2 " + second2); //check these
+
+                }
             }
         }
-    
+
+        first2.addAll(second2);
+
+        Collections.sort(first2);
+
+        int temp = first2.get(1) + first2.get(2);
+
+        double average = (first2.get(1) + first2.get(2)) / 2.0;
+        System.out.println(average);
+    }
+
+    static void countInversions (ArrayList<Integer> firstList, ArrayList<Integer> secondList) {
+        //System.out.println(firstList + " " + secondList);
+        ArrayList<Integer> inversions = new ArrayList<Integer>();
+        int counter = firstList.size();
+        int totalCT = 0;
+
+        int leftPT = 0;
+        int rightPT = 0;
+        while (leftPT < firstList.size() && rightPT < secondList.size()) {
+            if (firstList.get(leftPT) < secondList.get(rightPT)) {
+                counter--;
+                inversions.add(leftPT);
+                leftPT++;
+            }
+            else if (firstList.get(leftPT) > secondList.get(rightPT)) {
+                totalCT = totalCT + counter;
+                inversions.add(rightPT);
+                rightPT++;
+            }
+        }
+
+        System.out.println(totalCT);
+
     }
 }
